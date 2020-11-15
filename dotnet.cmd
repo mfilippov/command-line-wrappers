@@ -124,7 +124,7 @@ CD "%DOTNET_TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Extracting %TARGET_DIR%%DOTNET_TEMP_FILE% to %DOTNET_TARGET_DIR%
-"%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\..\\%DOTNET_TEMP_FILE%', '.');"
+"%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\%DOTNET_TEMP_FILE%', '.');"
 if errorlevel 1 goto fail
 
 DEL /F "..\..\%DOTNET_TEMP_FILE%"

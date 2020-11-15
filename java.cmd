@@ -117,7 +117,7 @@ if "%CURRENT_FLAG%" == "%JVM_URL%" goto continueWithJvm
 
 :downloadAndExtractJvm
 
-CD "%TARGET_DIR%"
+cd /d "%TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Downloading %JVM_URL% to %TARGET_DIR%%JVM_TEMP_FILE%
@@ -125,20 +125,20 @@ if exist "%JVM_TEMP_FILE%" DEL /F "%JVM_TEMP_FILE%"
 "%POWERSHELL%" -nologo -noprofile -Command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; (New-Object Net.WebClient).DownloadFile('%JVM_URL%', '%JVM_TEMP_FILE%')"
 if errorlevel 1 goto fail
 
-RMDIR /S /Q "%JVM_TARGET_DIR%"
+rmdir /S /Q "%JVM_TARGET_DIR%"
 if errorlevel 1 goto fail
 
-MKDIR "%JVM_TARGET_DIR%"
+mkdir "%JVM_TARGET_DIR%"
 if errorlevel 1 goto fail
 
-CD "%JVM_TARGET_DIR%"
+cd /d "%JVM_TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Extracting %TARGET_DIR%%JVM_TEMP_FILE% to %JVM_TARGET_DIR%
 "%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\..\\%JVM_TEMP_FILE%', '.');"
 if errorlevel 1 goto fail
 
-DEL /F "..\..\%JVM_TEMP_FILE%"
+del /F "..\..\%JVM_TEMP_FILE%"
 if errorlevel 1 goto fail
 
 echo %JVM_URL%>"%JVM_TARGET_DIR%.flag"

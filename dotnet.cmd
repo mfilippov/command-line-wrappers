@@ -106,7 +106,7 @@ if "%CURRENT_FLAG%" == "%DOTNET_URL%" goto continueWithDotNet
 
 :downloadAndExtractDotNet
 
-CD "%TARGET_DIR%"
+cd /d "%TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Downloading %DOTNET_URL% to %TARGET_DIR%%DOTNET_TEMP_FILE%
@@ -114,20 +114,20 @@ if exist "%DOTNET_TEMP_FILE%" DEL /F "%DOTNET_TEMP_FILE%"
 "%POWERSHELL%" -nologo -noprofile -Command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; (New-Object Net.WebClient).DownloadFile('%DOTNET_URL%', '%DOTNET_TEMP_FILE%')"
 if errorlevel 1 goto fail
 
-RMDIR /S /Q "%DOTNET_TARGET_DIR%"
+rmdir /S /Q "%DOTNET_TARGET_DIR%"
 if errorlevel 1 goto fail
 
-MKDIR "%DOTNET_TARGET_DIR%"
+mkdir "%DOTNET_TARGET_DIR%"
 if errorlevel 1 goto fail
 
-CD "%DOTNET_TARGET_DIR%"
+cd /d %DOTNET_TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Extracting %TARGET_DIR%%DOTNET_TEMP_FILE% to %DOTNET_TARGET_DIR%
 "%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\%DOTNET_TEMP_FILE%', '.');"
 if errorlevel 1 goto fail
 
-DEL /F "..\..\%DOTNET_TEMP_FILE%"
+del /F "..\%DOTNET_TEMP_FILE%"
 if errorlevel 1 goto fail
 
 echo %DOTNET_URL%>"%DOTNET_TARGET_DIR%.flag"

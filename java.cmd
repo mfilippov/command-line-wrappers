@@ -96,8 +96,6 @@ JAVA_HOME=$JAVA_HOME exec "$JAVA_HOME/bin/java" "$@"
 
 :CMDSCRIPT
 
-if exist "%JAVA_HOME%\bin\java.exe" goto continueWithJavaHome
-
 setlocal
 set VERSION=java-cmd-v1
 set COMPANY_NAME=Mikhail Filippov

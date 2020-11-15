@@ -1,0 +1,37 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: $GITHUB_WORKSPACE/dotnet.cmd --version
+      - name: Test script java.cmd
+        run: $GITHUB_WORKSPACE/java.cmd --version
+  job2:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: $GITHUB_WORKSPACE/dotnet.cmd --version
+      - name : Test script java.cmd
+        run: $GITHUB_WORKSPACE/java.cmd --version
+  job3:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: "%GITHUB_WORKSPACE%\\dotnet.cmd --version"
+        shell: cmd
+      - name: Test script java.cmd
+        run: "%GITHUB_WORKSPACE%\\java.cmd --version"
+        shell: cmd

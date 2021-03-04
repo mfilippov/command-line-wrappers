@@ -39,13 +39,32 @@ case "`uname`" in
 esac
 
 if [ "$darwin" = "true" ]; then
-    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64.tar.gz
-    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/db160ec7-2f36-4f41-9a87-fab65cd142f9/7d4afadf1808146ba7794edaf0f97924/dotnet-sdk-5.0.200-osx-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64-$SCRIPT_VERSION
+    case $(uname -m) in
+      x86_64)
+        DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64.tar.gz
+        DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/db160ec7-2f36-4f41-9a87-fab65cd142f9/7d4afadf1808146ba7794edaf0f97924/dotnet-sdk-5.0.200-osx-x64.tar.gz
+        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64-$SCRIPT_VERSION
+        ;;
+      *)
+        echo "Unknown architecture $(uname -m)" >&2; exit 1
+        ;;
+    esac
 else
-    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64.tar.gz
-    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/64a6b4b9-a92e-4efc-a588-569d138919c6/a97f4be78d7cc237a4f5c306866f7a1c/dotnet-sdk-5.0.200-linux-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64-$SCRIPT_VERSION
+    case $(uname -m) in
+      x86_64)
+        DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64.tar.gz
+        DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/64a6b4b9-a92e-4efc-a588-569d138919c6/a97f4be78d7cc237a4f5c306866f7a1c/dotnet-sdk-5.0.200-linux-x64.tar.gz
+        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64-$SCRIPT_VERSION
+        ;;
+      aarch64)
+        DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-linux-arm64.tar.gz
+        DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/0a823585-f6ac-4b4f-994d-c073d16267c3/af8c9fcdf76492048b60abfe0b311e2e/dotnet-sdk-5.0.200-linux-arm64.tar.gz
+        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-arm64-$SCRIPT_VERSION
+        ;;
+      *)
+        echo "Unknown architecture $(uname -m)" >&2; exit 1
+        ;;
+    esac
 fi
 
 set -e

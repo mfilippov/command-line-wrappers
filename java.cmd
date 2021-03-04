@@ -41,13 +41,37 @@ case "`uname`" in
 esac
 
 if [ "$darwin" = "true" ]; then
-    JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-x64.tar.gz
-    JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-macosx-x64.tar.gz
-    JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.4.11.1-macosx-x64-$VERSION
+    case $(uname -m) in
+      x86_64)
+        JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-x64.tar.gz
+        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-macosx-x64.tar.gz
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-macosx-x64-$VERSION
+        ;;
+      arm64)
+        JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-arm64.tar.gz
+        JVM_URL=https://cdn.azul.com/zulu/bin/zulu11.45.27-ca-jdk11.0.10-macosx_aarch64.tar.gz
+        JVM_TARGET_DIR=$TARGET_DIR/zulu-11.0.10-macosx-arm64-$VERSION
+        ;;
+      *)
+        echo "Unknown architecture $(uname -m)" >&2; exit 1
+        ;;
+    esac
 else
-    JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-x64.tar.gz
-    JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-x64.tar.gz
-    JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.4.11.1-linux-x64-$VERSION
+    case $(uname -m) in
+      x86_64)
+        JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-x64.tar.gz
+        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-x64.tar.gz
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-x64-$VERSION
+        ;;
+      aarch64)
+        JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-aarch64.tar.gz
+        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-aarch64.tar.gz
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-aarch64-$VERSION
+        ;;
+      *)
+        echo "Unknown architecture $(uname -m)" >&2; exit 1
+        ;;
+    esac
 fi
 
 set -e

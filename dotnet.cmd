@@ -39,13 +39,13 @@ case "`uname`" in
 esac
 
 if [ "$darwin" = "true" ]; then
-    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.100-osx-x64.tar.gz
-    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/0871336f-9a83-4ce4-80ca-625d03003369/2eb78456e0b106e9515dc03898d3867a/dotnet-sdk-5.0.100-osx-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.100-osx-x64-$VERSION
+    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64.tar.gz
+    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/db160ec7-2f36-4f41-9a87-fab65cd142f9/7d4afadf1808146ba7794edaf0f97924/dotnet-sdk-5.0.200-osx-x64.tar.gz
+    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64-$VERSION
 else
-    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.100-linux-x64.tar.gz
-    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/820db713-c9a5-466e-b72a-16f2f5ed00e2/628aa2a75f6aa270e77f4a83b3742fb8/dotnet-sdk-5.0.100-linux-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.100-linux-x64-$VERSION
+    DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64.tar.gz
+    DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/64a6b4b9-a92e-4efc-a588-569d138919c6/a97f4be78d7cc237a4f5c306866f7a1c/dotnet-sdk-5.0.200-linux-x64.tar.gz
+    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64-$VERSION
 fi
 
 set -e
@@ -90,9 +90,9 @@ setlocal
 set VERSION=dotnet-cmd-v1
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\Temp\%COMPANY_NAME%\
-set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-5.0.100-win-x64-%VERSION%\
-set DOTNET_TEMP_FILE=dotnet-sdk-5.0.100-win-x64.zip
-set DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/7b78bdaa-d0ac-41c4-9fdc-5820d7dc79b6/cea499dd314ba6394ccea51a2a2dcda9/dotnet-sdk-5.0.100-win-x64.zip
+set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-5.0.200-win-x64-%VERSION%\
+set DOTNET_TEMP_FILE=dotnet-sdk-5.0.200-win-x64.zip
+set DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/761159fa-2843-4abe-8052-147e6c873a78/77658948a9e0f7bc31e978b6bc271ec8/dotnet-sdk-5.0.200-win-x64.zip
 
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe

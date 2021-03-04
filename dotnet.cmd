@@ -3,7 +3,7 @@
 GOTO :CMDSCRIPT
 ::CMDLITERAL
 
-VERSION=dotnet-cmd-v1
+SCRIPT_VERSION=dotnet-cmd-v1
 COMPANY_DIR="Mikhail Filippov"
 TARGET_DIR="${TEMPDIR:-/tmp}/$COMPANY_DIR"
 
@@ -41,11 +41,11 @@ esac
 if [ "$darwin" = "true" ]; then
     DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64.tar.gz
     DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/db160ec7-2f36-4f41-9a87-fab65cd142f9/7d4afadf1808146ba7794edaf0f97924/dotnet-sdk-5.0.200-osx-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64-$VERSION
+    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-osx-x64-$SCRIPT_VERSION
 else
     DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64.tar.gz
     DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/64a6b4b9-a92e-4efc-a588-569d138919c6/a97f4be78d7cc237a4f5c306866f7a1c/dotnet-sdk-5.0.200-linux-x64.tar.gz
-    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64-$VERSION
+    DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-5.0.200-linux-x64-$SCRIPT_VERSION
 fi
 
 set -e
@@ -87,10 +87,10 @@ exec "$DOTNET_TARGET_DIR/dotnet" "$@"
 :CMDSCRIPT
 
 setlocal
-set VERSION=dotnet-cmd-v1
+set SCRIPT_VERSION=dotnet-cmd-v1
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\Temp\%COMPANY_NAME%\
-set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-5.0.200-win-x64-%VERSION%\
+set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-5.0.200-win-x64-%SCRIPT_VERSION%\
 set DOTNET_TEMP_FILE=dotnet-sdk-5.0.200-win-x64.zip
 set DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/761159fa-2843-4abe-8052-147e6c873a78/77658948a9e0f7bc31e978b6bc271ec8/dotnet-sdk-5.0.200-win-x64.zip
 

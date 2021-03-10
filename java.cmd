@@ -5,7 +5,7 @@ GOTO :CMDSCRIPT
 
 set -eux
 
-VERSION=java-cmd-v1
+SCRIPT_VERSION=java-cmd-v1
 COMPANY_DIR="Mikhail Filippov"
 TARGET_DIR="${TEMPDIR:-/tmp}/$COMPANY_DIR"
 
@@ -45,12 +45,12 @@ if [ "$darwin" = "true" ]; then
       x86_64)
         JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-x64.tar.gz
         JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-macosx-x64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-macosx-x64-$VERSION
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-macosx-x64-$SCRIPT_VERSION
         ;;
       arm64)
         JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-arm64.tar.gz
         JVM_URL=https://cdn.azul.com/zulu/bin/zulu11.45.27-ca-jdk11.0.10-macosx_aarch64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/zulu-11.0.10-macosx-arm64-$VERSION
+        JVM_TARGET_DIR=$TARGET_DIR/zulu-11.0.10-macosx-arm64-$SCRIPT_VERSION
         ;;
       *)
         echo "Unknown architecture $(uname -m)" >&2; exit 1
@@ -61,12 +61,12 @@ else
       x86_64)
         JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-x64.tar.gz
         JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-x64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-x64-$VERSION
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-x64-$SCRIPT_VERSION
         ;;
       aarch64)
         JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-aarch64.tar.gz
         JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-aarch64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-aarch64-$VERSION
+        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-aarch64-$SCRIPT_VERSION
         ;;
       *)
         echo "Unknown architecture $(uname -m)" >&2; exit 1
@@ -121,10 +121,10 @@ JAVA_HOME=$JAVA_HOME exec "$JAVA_HOME/bin/java" "$@"
 :CMDSCRIPT
 
 setlocal
-set VERSION=java-cmd-v1
+set SCRIPT_VERSION=java-cmd-v1
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\Temp\%COMPANY_NAME%\
-set JVM_TARGET_DIR=%TARGET_DIR%amazon-corretto-11.0.9.12.1-windows-x64-jdk-%VERSION%\
+set JVM_TARGET_DIR=%TARGET_DIR%amazon-corretto-11.0.9.12.1-windows-x64-jdk-%SCRIPT_VERSION%\
 set JVM_TEMP_FILE=jvm-windows-x64.zip
 set JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-windows-x64-jdk.zip
 

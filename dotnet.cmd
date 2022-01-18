@@ -171,7 +171,7 @@ exec "$DOTNET_TARGET_DIR/dotnet" "$@"
 
 setlocal
 set SCRIPT_VERSION=v2
-set COMPANY_NAME="Mikhail Filippov"
+set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
 set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-6.0.101-win-x64-%SCRIPT_VERSION%\
 set DOTNET_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip

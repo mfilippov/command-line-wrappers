@@ -87,11 +87,20 @@ else
       ;;
     aarch64)
       if is_linux_musl; then
-        DOTNET_URL=https://cache-redirector.jetbrains.com/download/pr/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e/dotnet-sdk-6.0.101-linux-musl-arm64.tar.gz
         DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-arm64-$SCRIPT_VERSION
       else
-        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e/dotnet-sdk-6.0.101-linux-musl-arm64.tar.gz
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
         DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-arm64-$SCRIPT_VERSION
+      fi
+      ;;
+    armv7l | armv8l)
+      if is_linux_musl; then
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/3a7ae99d-a36b-43c3-bd8e-14df916c7b56/b8e0802880ca73c19f56ac8ce5b95c1e/dotnet-sdk-6.0.101-linux-musl-arm.tar.gz
+        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-arm-$SCRIPT_VERSION
+      else
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/72888385-910d-4ef3-bae2-c08c28e42af0/59be90572fdcc10766f1baf5ac39529a/dotnet-sdk-6.0.101-linux-arm.tar.gz
+        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-arm-$SCRIPT_VERSION
       fi
       ;;
     *)

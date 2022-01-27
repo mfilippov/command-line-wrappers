@@ -87,10 +87,10 @@ else
       ;;
     aarch64)
       if is_linux_musl; then
-        DOTNET_URL=https://cache-redirector.jetbrains.com/download/pr/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e/dotnet-sdk-6.0.101-linux-musl-arm64.tar.gz
         DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-arm64-$SCRIPT_VERSION
       else
-        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e/dotnet-sdk-6.0.101-linux-musl-arm64.tar.gz
+        DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
         DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-arm64-$SCRIPT_VERSION
       fi
       ;;

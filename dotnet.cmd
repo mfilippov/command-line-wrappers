@@ -35,80 +35,61 @@ is_linux_musl () {
   (ldd --version 2>&1 || true) | grep -q musl
 }
 
-# OS specific support (must be 'true' or 'false').
-cygwin=false
-msys=false
-darwin=false
-nonstop=false
-case "`uname`" in
-  CYGWIN* )
-    cygwin=true
-    ;;
-  Darwin* )
-    darwin=true
-    ;;
-  MINGW* )
-    msys=true
-    ;;
-  NONSTOP* )
-    nonstop=true
-    ;;
-esac
-
-DOTNET_BASE_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr
-DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-temp.tar.gz
-if [ "$darwin" = "true" ]; then
+case $(uname) in
+Darwin)
   DOTNET_ARCH=$(uname -m)
   if ! $KEEP_ROSETTA2 && [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || true)" = "1" ]; then
     DOTNET_ARCH=arm64
   fi
   case $DOTNET_ARCH in
-    x86_64)
-      DOTNET_URL=$DOTNET_BASE_URL/4a39aac8-74b7-4366-81cd-4fcce0bd8354/02a581437c26bd88f5afc6ccc81d9637/dotnet-sdk-6.0.101-osx-x64.tar.gz
-      DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-osx-x64-$SCRIPT_VERSION
-      ;;
-    arm64)
-      DOTNET_URL=$DOTNET_BASE_URL/c1351f4c-d2e7-4066-a153-b6130f677bcc/161b0c331a5da2e080c7ad3a5ae2b185/dotnet-sdk-6.0.101-osx-arm64.tar.gz
-      DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-osx-arm64-$SCRIPT_VERSION
-      ;;
-    *)
-      echo "Unknown architecture $(uname -m)" >&2; exit 1
-      ;;
-  esac
-else
-  case $(uname -m) in
-    x86_64)
-      if is_linux_musl; then
-        DOTNET_URL=$DOTNET_BASE_URL/bd94779d-c7c4-47fd-b80a-0088caa0afc6/40f115bbf4c068359e7a066fe0b03dbc/dotnet-sdk-6.0.101-linux-musl-x64.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-x64-$SCRIPT_VERSION
-      else
-        DOTNET_URL=$DOTNET_BASE_URL/ede8a287-3d61-4988-a356-32ff9129079e/bdb47b6b510ed0c4f0b132f7f4ad9d5a/dotnet-sdk-6.0.101-linux-x64.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-x64-$SCRIPT_VERSION
-      fi
-      ;;
-    aarch64)
-      if is_linux_musl; then
-        DOTNET_URL=$DOTNET_BASE_URL/ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e/dotnet-sdk-6.0.101-linux-musl-arm64.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-arm64-$SCRIPT_VERSION
-      else
-        DOTNET_URL=$DOTNET_BASE_URL/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-arm64-$SCRIPT_VERSION
-      fi
-      ;;
-    armv7l | armv8l)
-      if is_linux_musl; then
-        DOTNET_URL=$DOTNET_BASE_URL/3a7ae99d-a36b-43c3-bd8e-14df916c7b56/b8e0802880ca73c19f56ac8ce5b95c1e/dotnet-sdk-6.0.101-linux-musl-arm.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-musl-arm-$SCRIPT_VERSION
-      else
-        DOTNET_URL=$DOTNET_BASE_URL/72888385-910d-4ef3-bae2-c08c28e42af0/59be90572fdcc10766f1baf5ac39529a/dotnet-sdk-6.0.101-linux-arm.tar.gz
-        DOTNET_TARGET_DIR=$TARGET_DIR/dotnet-sdk-6.0.101-linux-arm-$SCRIPT_VERSION
-      fi
-      ;;
-    *)
-      echo "Unknown architecture $(uname -m)" >&2; exit 1
-      ;;
-  esac
-fi
+  x86_64)
+    DOTNET_HASH_URL=4a39aac8-74b7-4366-81cd-4fcce0bd8354/02a581437c26bd88f5afc6ccc81d9637
+    DOTNET_FILE_NAME=dotnet-sdk-6.0.101-osx-x64
+    ;;
+  arm64)
+    DOTNET_HASH_URL=c1351f4c-d2e7-4066-a153-b6130f677bcc/161b0c331a5da2e080c7ad3a5ae2b185
+    DOTNET_FILE_NAME=dotnet-sdk-6.0.101-osx-arm64
+    ;;
+  *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
+  esac;;
+Linux)
+  DOTNET_ARCH=$(linux$(getconf LONG_BIT) uname -m)
+  case $DOTNET_ARCH in
+  x86_64)
+    if is_linux_musl; then
+      DOTNET_HASH_URL=bd94779d-c7c4-47fd-b80a-0088caa0afc6/40f115bbf4c068359e7a066fe0b03dbc
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-x64
+    else
+      DOTNET_HASH_URL=ede8a287-3d61-4988-a356-32ff9129079e/bdb47b6b510ed0c4f0b132f7f4ad9d5a
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-x64
+    fi
+    ;;
+  aarch64)
+    if is_linux_musl; then
+      DOTNET_HASH_URL=ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-arm64
+    else
+      DOTNET_HASH_URL=d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-arm64
+    fi
+    ;;
+  armv7l | armv8l)
+    if is_linux_musl; then
+      DOTNET_HASH_URL=3a7ae99d-a36b-43c3-bd8e-14df916c7b56/b8e0802880ca73c19f56ac8ce5b95c1e
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-arm
+    else
+      DOTNET_HASH_URL=72888385-910d-4ef3-bae2-c08c28e42af0/59be90572fdcc10766f1baf5ac39529a
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-arm
+    fi
+    ;;
+  *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
+  esac;;
+*) echo "Unknown platform: $(uname)" >&2; exit 1;;
+esac
+
+DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/$DOTNET_HASH_URL/$DOTNET_FILE_NAME.tar.gz
+DOTNET_TARGET_DIR=$TARGET_DIR/$DOTNET_FILE_NAME-$SCRIPT_VERSION
+DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-temp.tar.gz
 
 if grep -q -x "$DOTNET_URL" "$DOTNET_TARGET_DIR/.flag" 2>/dev/null; then
   # Everything is up-to-date in $DOTNET_TARGET_DIR, do nothing

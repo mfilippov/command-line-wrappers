@@ -43,12 +43,12 @@ Darwin)
   fi
   case $DOTNET_ARCH in
   x86_64)
-    DOTNET_HASH_URL=4a39aac8-74b7-4366-81cd-4fcce0bd8354/02a581437c26bd88f5afc6ccc81d9637
-    DOTNET_FILE_NAME=dotnet-sdk-6.0.101-osx-x64
+    DOTNET_HASH_URL=cf3e1c73-a9a9-4e08-8607-8f9edae5f3f2/40a021a98a6b6e430a1f170037735f6f
+    DOTNET_FILE_NAME=dotnet-sdk-6.0.301-osx-x64
     ;;
   arm64)
-    DOTNET_HASH_URL=c1351f4c-d2e7-4066-a153-b6130f677bcc/161b0c331a5da2e080c7ad3a5ae2b185
-    DOTNET_FILE_NAME=dotnet-sdk-6.0.101-osx-arm64
+    DOTNET_HASH_URL=3859fff3-f8a9-4e05-87cd-bd6db75833f5/64ec1099d45f85d14099da3c1f92a5c3
+    DOTNET_FILE_NAME=dotnet-sdk-6.0.301-osx-arm64
     ;;
   *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
   esac;;
@@ -57,29 +57,29 @@ Linux)
   case $DOTNET_ARCH in
   x86_64)
     if is_linux_musl; then
-      DOTNET_HASH_URL=bd94779d-c7c4-47fd-b80a-0088caa0afc6/40f115bbf4c068359e7a066fe0b03dbc
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-x64
+      DOTNET_HASH_URL=206aebda-126f-484f-af02-051a17c1ec54/2ec559cb69cec83ffa64dba5441a1b2d
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-x64
     else
-      DOTNET_HASH_URL=ede8a287-3d61-4988-a356-32ff9129079e/bdb47b6b510ed0c4f0b132f7f4ad9d5a
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-x64
+      DOTNET_HASH_URL=77d472e5-194c-421e-992d-e4ca1d08e6cc/56c61ac303ddf1b12026151f4f000a2b
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-x64
     fi
     ;;
   aarch64)
     if is_linux_musl; then
-      DOTNET_HASH_URL=ca800552-c6bb-4f1d-9d0c-f76f37edc8cb/f2c281c7f66347866086a3b0cf2b338e
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-arm64
+      DOTNET_HASH_URL=4bd2399a-e0e9-43a6-9767-ac15dd430b1c/3dd4307a1ce811e31943d80eee638bc1
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-arm64
     else
-      DOTNET_HASH_URL=d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-arm64
+      DOTNET_HASH_URL=06c4ee8e-bf2c-4e46-ab1c-e14dd72311c1/f7bc6c9677eaccadd1d0e76c55d361ea
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-arm64
     fi
     ;;
   armv7l | armv8l)
     if is_linux_musl; then
-      DOTNET_HASH_URL=3a7ae99d-a36b-43c3-bd8e-14df916c7b56/b8e0802880ca73c19f56ac8ce5b95c1e
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-musl-arm
+      DOTNET_HASH_URL=952c468c-ac70-46b0-9274-4cb9c270950c/f0cd4c8392158547c2fa38674bfd56fd
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-arm
     else
-      DOTNET_HASH_URL=72888385-910d-4ef3-bae2-c08c28e42af0/59be90572fdcc10766f1baf5ac39529a
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.101-linux-arm
+      DOTNET_HASH_URL=a218e3b9-941b-43be-bfb1-615862777457/80954de34ab68729981ed372a8d25b46
+      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-arm
     fi
     ;;
   *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
@@ -166,7 +166,7 @@ set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
 set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-6.0.101-win-x64-%SCRIPT_VERSION%\
 set DOTNET_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip
-set DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/8e55ce37-9740-41b7-a758-f731043060da/4b8bfd4aad9d322bf501ca9e473e35c5/dotnet-sdk-6.0.101-win-x64.zip
+set DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/333eba0c-3242-48f3-a923-fdac5f219f77/342a4595101e3b4616360a7666459236/dotnet-sdk-6.0.301-win-x64.zip
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe
 

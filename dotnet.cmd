@@ -164,9 +164,30 @@ setlocal
 set SCRIPT_VERSION=v2
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
-set DOTNET_TARGET_DIR=%TARGET_DIR%dotnet-sdk-6.0.101-win-x64-%SCRIPT_VERSION%\
+
+if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
+    set DOTNET_HASH_URL=656c8345-6661-409e-871d-00ca93cec542/cae3dcdc5c668c0e0abcf12d838348f1
+    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-arm64
+) else (
+
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set DOTNET_HASH_URL=333eba0c-3242-48f3-a923-fdac5f219f77/342a4595101e3b4616360a7666459236
+    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x64
+) else (
+
+if "%PROCESSOR_ARCHITECTURE%"=="x86" (
+    set DOTNET_HASH_URL=0a9cabcb-cb52-4f5e-bb79-1298f9ff9e22/c306c5cc940a9bb9a39ffe6619a255e6
+    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x86
+) else (
+
+echo Unknown Windows architecture
+goto fail
+
+)))
+
+set DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/%DOTNET_HASH_URL%/%DOTNET_FILE_NAME%.zip
+set DOTNET_TARGET_DIR=%TARGET_DIR%%DOTNET_FILE_NAME%-%SCRIPT_VERSION%\
 set DOTNET_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip
-set DOTNET_URL=https://cache-redirector.jetbrains.com/download.visualstudio.microsoft.com/download/pr/333eba0c-3242-48f3-a923-fdac5f219f77/342a4595101e3b4616360a7666459236/dotnet-sdk-6.0.301-win-x64.zip
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe
 

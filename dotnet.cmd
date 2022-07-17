@@ -165,17 +165,19 @@ set SCRIPT_VERSION=v2
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
 
-if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
+for /f "tokens=3 delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') do set ARCH=%%a
+
+if "%ARCH%"=="ARM64" (
     set DOTNET_HASH_URL=656c8345-6661-409e-871d-00ca93cec542/cae3dcdc5c668c0e0abcf12d838348f1
     set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-arm64
 ) else (
 
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+if "%ARCH%"=="AMD64" (
     set DOTNET_HASH_URL=333eba0c-3242-48f3-a923-fdac5f219f77/342a4595101e3b4616360a7666459236
     set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x64
 ) else (
 
-if "%PROCESSOR_ARCHITECTURE%"=="x86" (
+if "%ARCH%"=="x86" (
     set DOTNET_HASH_URL=0a9cabcb-cb52-4f5e-bb79-1298f9ff9e22/c306c5cc940a9bb9a39ffe6619a255e6
     set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x86
 ) else (

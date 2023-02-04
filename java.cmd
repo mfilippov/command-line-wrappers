@@ -3,11 +3,12 @@
 GOTO :CMDSCRIPT
 ::CMDLITERAL
 
-set -eux
+set -eu
 
-SCRIPT_VERSION=java-cmd-v1
+SCRIPT_VERSION=java-cmd-v2
 COMPANY_DIR="Mikhail Filippov"
-TARGET_DIR="${TEMPDIR:-/tmp}/$COMPANY_DIR"
+TARGET_DIR="${TEMPDIR:-$HOME/.local/share}/$COMPANY_DIR/java-cmd"
+KEEP_ROSETTA2=false
 
 warn () {
     echo "$*"
@@ -20,88 +21,126 @@ die () {
     exit 1
 }
 
-# OS specific support (must be 'true' or 'false').
-cygwin=false
-msys=false
-darwin=false
-nonstop=false
-case "`uname`" in
-  CYGWIN* )
-    cygwin=true
+retry_on_error () {
+  local n="$1"
+  shift
+
+  for i in $(seq 2 "$n"); do
+    "$@" 2>&1 && return || echo "WARNING: Command '$1' returned non-zero exit status $?, try again"
+  done
+  "$@"
+}
+
+is_linux_musl () {
+  (ldd --version 2>&1 || true) | grep -q musl
+}
+# Links from here: https://github.com/corretto/corretto-17/releases
+case $(uname) in
+Darwin)
+  JVM_ARCH=$(uname -m)
+  if ! $KEEP_ROSETTA2 && [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || true)" = "1" ]; then
+    JVM_ARCH=arm64
+  fi
+  case $JVM_ARCH in
+  x86_64)
+    JVM_FILE_NAME=amazon-corretto-17-x64-macos-jdk
+    JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-macosx-x64.tar.gz
     ;;
-  Darwin* )
-    darwin=true
+  arm64)
+    JVM_FILE_NAME=amazon-corretto-17-aarch64-macos-jdk
+    JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-macosx-aarch64.tar.gz
     ;;
-  MINGW* )
-    msys=true
+  *) echo "Unknown architecture $JVM_ARCH" >&2; exit 1;;
+  esac;;
+Linux)
+  JVM_ARCH=$(linux$(getconf LONG_BIT) uname -m)
+  case $JVM_ARCH in
+  x86_64)
+    if is_linux_musl; then
+      JVM_FILE_NAME=amazon-corretto-17-x64-alpine-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-alpine-linux-x64.tar.gz
+    else
+      JVM_FILE_NAME=amazon-corretto-17-x64-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-linux-x64.tar.gz
+    fi
     ;;
-  NONSTOP* )
-    nonstop=true
+  aarch64)
+    if is_linux_musl; then
+      JVM_FILE_NAME=amazon-corretto-17-alpine-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-alpine-linux-aarch64.tar.gz
+    else
+      JVM_FILE_NAME=amazon-corretto-17-aarch64-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-linux-aarch64.tar.gz
+    fi
     ;;
+  *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
+  esac;;
+*) echo "Unknown platform: $(uname)" >&2; exit 1;;
 esac
 
-if [ "$darwin" = "true" ]; then
-    case $(uname -m) in
-      x86_64)
-        JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-x64.tar.gz
-        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-macosx-x64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-macosx-x64-$SCRIPT_VERSION
-        ;;
-      arm64)
-        JVM_TEMP_FILE=$TARGET_DIR/jvm-macosx-arm64.tar.gz
-        JVM_URL=https://cdn.azul.com/zulu/bin/zulu11.45.27-ca-jdk11.0.10-macosx_aarch64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/zulu-11.0.10-macosx-arm64-$SCRIPT_VERSION
-        ;;
-      *)
-        echo "Unknown architecture $(uname -m)" >&2; exit 1
-        ;;
-    esac
+JVM_TARGET_DIR=$TARGET_DIR/$JVM_FILE_NAME-$SCRIPT_VERSION
+JVM_TEMP_FILE=$TARGET_DIR/java-temp.tar.gz
+
+if grep -q -x "$JVM_URL" "$JVM_TARGET_DIR/.flag" 2>/dev/null; then
+  # Everything is up-to-date in $JVM_TARGET_DIR, do nothing
+  true
 else
-    case $(uname -m) in
-      x86_64)
-        JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-x64.tar.gz
-        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-x64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-x64-$SCRIPT_VERSION
-        ;;
-      aarch64)
-        JVM_TEMP_FILE=$TARGET_DIR/jvm-linux-aarch64.tar.gz
-        JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-linux-aarch64.tar.gz
-        JVM_TARGET_DIR=$TARGET_DIR/amazon-corretto-11.0.9.12.1-linux-aarch64-$SCRIPT_VERSION
-        ;;
-      *)
-        echo "Unknown architecture $(uname -m)" >&2; exit 1
-        ;;
-    esac
-fi
-
-set -e
-
-if [ -e "$JVM_TARGET_DIR/.flag" ] && [ -n "$(ls "$JVM_TARGET_DIR")" ] && [ "x$(cat "$JVM_TARGET_DIR/.flag")" = "x${JVM_URL}" ]; then
-    # Everything is up-to-date in $JVM_TARGET_DIR, do nothing
-    true
-else
-  warn "Downloading $JVM_URL to $JVM_TEMP_FILE"
-
-  rm -f "$JVM_TEMP_FILE"
+while true; do  # Note(k15tfu): for goto
   mkdir -p "$TARGET_DIR"
-  if command -v curl >/dev/null 2>&1; then
+
+  LOCK_FILE="$TARGET_DIR/.java-cmd-lock.pid"
+  TMP_LOCK_FILE="$TARGET_DIR/.tmp.$$.pid"
+  echo $$ >"$TMP_LOCK_FILE"
+
+  while ! ln "$TMP_LOCK_FILE" "$LOCK_FILE" 2>/dev/null; do
+    LOCK_OWNER=$(cat "$LOCK_FILE" 2>/dev/null || true)
+    while [ -n "$LOCK_OWNER" ] && ps -p $LOCK_OWNER >/dev/null; do
+      warn "Waiting for the process $LOCK_OWNER to finish bootstrap java.cmd"
+      sleep 1
+      LOCK_OWNER=$(cat "$LOCK_FILE" 2>/dev/null || true)
+
+      # Hurry up, bootstrap is ready..
+      if grep -q -x "$DOTNET_URL" "$JVM_TARGET_DIR/.flag" 2>/dev/null; then
+        break 3  # Note(k15tfu): goto out of the outer if-else block.
+      fi
+    done
+
+    if [ -n "$LOCK_OWNER" ] && grep -q -x $LOCK_OWNER "$LOCK_FILE" 2>/dev/null; then
+      die "ERROR: The lock file $LOCK_FILE still exists on disk after the owner process $LOCK_OWNER exited"
+    fi
+  done
+
+  trap "rm -f \"$LOCK_FILE\"" EXIT
+  rm "$TMP_LOCK_FILE"
+
+  if ! grep -q -x "$JVM_URL" "$JVM_TARGET_DIR/.flag" 2>/dev/null; then
+    warn "Downloading $JVM_URL to $JVM_TEMP_FILE"
+
+    rm -f "$JVM_TEMP_FILE"
+    if command -v curl >/dev/null 2>&1; then
       if [ -t 1 ]; then CURL_PROGRESS="--progress-bar"; else CURL_PROGRESS="--silent --show-error"; fi
-      curl $CURL_PROGRESS --output "${JVM_TEMP_FILE}" "$JVM_URL"
-  elif command -v wget >/dev/null 2>&1; then
+      retry_on_error 5 curl -L $CURL_PROGRESS --output "${JVM_TEMP_FILE}" "$JVM_URL"
+    elif command -v wget >/dev/null 2>&1; then
       if [ -t 1 ]; then WGET_PROGRESS=""; else WGET_PROGRESS="-nv"; fi
-      wget $WGET_PROGRESS -O "${JVM_TEMP_FILE}" "$JVM_URL"
-  else
+      retry_on_error 5 wget $WGET_PROGRESS -O "${JVM_TEMP_FILE}" "$JVM_URL"
+    else
       die "ERROR: Please install wget or curl"
+    fi
+
+    warn "Extracting $JVM_TEMP_FILE to $JVM_TARGET_DIR"
+    rm -rf "$JVM_TARGET_DIR"
+    mkdir -p "$JVM_TARGET_DIR"
+
+
+    tar -x -f "$JVM_TEMP_FILE" -C "$JVM_TARGET_DIR"
+    rm -f "$JVM_TEMP_FILE"
+
+    echo "$JVM_URL" >"$JVM_TARGET_DIR/.flag"
   fi
 
-  warn "Extracting $JVM_TEMP_FILE to $JVM_TARGET_DIR"
-  rm -rf "$JVM_TARGET_DIR"
-  mkdir -p "$JVM_TARGET_DIR"
-
-  tar -x -f "$JVM_TEMP_FILE" -C "$JVM_TARGET_DIR"
-  rm -f "$JVM_TEMP_FILE"
-
-  echo "$JVM_URL" >"$JVM_TARGET_DIR/.flag"
+  rm "$LOCK_FILE"
+  break
+done
 fi
 
 JAVA_HOME=
@@ -118,19 +157,40 @@ fi
 
 JAVA_HOME=$JAVA_HOME exec "$JAVA_HOME/bin/java" "$@"
 
+
 :CMDSCRIPT
 
 setlocal
-set SCRIPT_VERSION=java-cmd-v1
+set SCRIPT_VERSION=java-cmd-v2
 set COMPANY_NAME=Mikhail Filippov
 set TARGET_DIR=%LOCALAPPDATA%\Temp\%COMPANY_NAME%\
-set JVM_TARGET_DIR=%TARGET_DIR%amazon-corretto-11.0.9.12.1-windows-x64-jdk-%SCRIPT_VERSION%\
-set JVM_TEMP_FILE=jvm-windows-x64.zip
-set JVM_URL=https://corretto.aws/downloads/resources/11.0.9.12.1/amazon-corretto-11.0.9.12.1-windows-x64-jdk.zip
+
+for /f "tokens=3 delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') do set ARCH=%%a
+
+if "%ARCH%"=="ARM64" (
+    set JVM_URL=https://aka.ms/download-jdk/microsoft-jdk-17.0.6-windows-aarch64.zip
+    set JVM_FILE_NAME=microsoft-jdk-17.0.6-windows-aarch64
+) else (
+
+if "%ARCH%"=="AMD64" (
+    set JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-windows-x64-jdk.zip
+    set JVM_FILE_NAME=microsoft-jdk-17.0.6-windows-x64
+) else (
+
+if "%ARCH%"=="x86" (
+    echo Unsupported Windows architecture x86
+    goto fail
+) else (
+
+echo Unknown Windows architecture 
+goto fail
+)))
+
+set JVM_TARGET_DIR=%TARGET_DIR%%DOTNET_FILE_NAME%-%SCRIPT_VERSION%\
+set JVM_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe
 
-if not exist "%JVM_TARGET_DIR%" MD "%JVM_TARGET_DIR%"
 
 if not exist "%JVM_TARGET_DIR%.flag" goto downloadAndExtractJvm
 
@@ -139,31 +199,40 @@ if "%CURRENT_FLAG%" == "%JVM_URL%" goto continueWithJvm
 
 :downloadAndExtractJvm
 
-cd /d "%TARGET_DIR%"
-if errorlevel 1 goto fail
+set DOWNLOAD_AND_EXTRACT_JVM_PS1= ^
+Set-StrictMode -Version 3.0; ^
+$ErrorActionPreference = 'Stop'; ^
+ ^
+$createdNew = $false; ^
+$lock = New-Object System.Threading.Mutex($true, 'Global\dotnet-cmd-lock', [ref]$createdNew); ^
+if (-not $createdNew) { ^
+    Write-Host 'Waiting for the other process to finish bootstrap dotnet.cmd'; ^
+    [void]$lock.WaitOne(); ^
+} ^
+ ^
+try { ^
+    if ((Get-Content '%JVM_TARGET_DIR%.flag' -ErrorAction Ignore) -ne '%JVM_URL%') { ^
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; ^
+        Write-Host 'Downloading %JVM_URL% to %JVM_TEMP_FILE%'; ^
+        [void](New-Item '%TARGET_DIR%' -ItemType Directory -Force); ^
+        (New-Object Net.WebClient).DownloadFile('%JVM_URL%', '%JVM_TEMP_FILE%'); ^
+ ^
+        Write-Host 'Extracting %JVM_TEMP_FILE% to %JVM_TARGET_DIR%'; ^
+        if (Test-Path '%JVM_TARGET_DIR%') { ^
+            Remove-Item '%JVM_TARGET_DIR%' -Recurse; ^
+        } ^
+        Add-Type -A 'System.IO.Compression.FileSystem'; ^
+        [IO.Compression.ZipFile]::ExtractToDirectory('%JVM_TEMP_FILE%', '%JVM_TARGET_DIR%'); ^
+        Remove-Item '%JVM_TEMP_FILE%'; ^
+ ^
+        Set-Content '%JVM_TARGET_DIR%.flag' -Value '%JVM_URL%'; ^
+    } ^
+} ^
+finally { ^
+    $lock.ReleaseMutex(); ^
+}
 
-echo Downloading %JVM_URL% to %TARGET_DIR%%JVM_TEMP_FILE%
-if exist "%JVM_TEMP_FILE%" DEL /F "%JVM_TEMP_FILE%"
-"%POWERSHELL%" -nologo -noprofile -Command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; (New-Object Net.WebClient).DownloadFile('%JVM_URL%', '%JVM_TEMP_FILE%')"
-if errorlevel 1 goto fail
-
-rmdir /S /Q "%JVM_TARGET_DIR%"
-if errorlevel 1 goto fail
-
-mkdir "%JVM_TARGET_DIR%"
-if errorlevel 1 goto fail
-
-cd /d "%JVM_TARGET_DIR%"
-if errorlevel 1 goto fail
-
-echo Extracting %TARGET_DIR%%JVM_TEMP_FILE% to %JVM_TARGET_DIR%
-"%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\%JVM_TEMP_FILE%', '.');"
-if errorlevel 1 goto fail
-
-del /F "..\%JVM_TEMP_FILE%"
-if errorlevel 1 goto fail
-
-echo %JVM_URL%>"%JVM_TARGET_DIR%.flag"
+"%POWERSHELL%" -nologo -noprofile -Command %DOWNLOAD_AND_EXTRACT_JVM_PS1%
 if errorlevel 1 goto fail
 
 :continueWithJvm
@@ -175,8 +244,10 @@ if not exist "%JAVA_HOME%\bin\java.exe" (
   goto fail
 )
 
-:continueWithJavaHome
-
 call "%JAVA_HOME%\bin\java.exe" %*
 exit /B %ERRORLEVEL%
 endlocal
+
+:fail
+echo "FAIL"
+exit /b 1

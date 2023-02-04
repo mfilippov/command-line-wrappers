@@ -186,8 +186,8 @@ echo Unknown Windows architecture
 goto fail
 )))
 
-set JVM_TARGET_DIR=%TARGET_DIR%%DOTNET_FILE_NAME%-%SCRIPT_VERSION%\
-set JVM_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip
+set JVM_TARGET_DIR=%TARGET_DIR%%JVM_FILE_NAME%-%SCRIPT_VERSION%\
+set JVM_TEMP_FILE=%TARGET_DIR%java-temp.zip
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe
 
@@ -204,9 +204,9 @@ Set-StrictMode -Version 3.0; ^
 $ErrorActionPreference = 'Stop'; ^
  ^
 $createdNew = $false; ^
-$lock = New-Object System.Threading.Mutex($true, 'Global\dotnet-cmd-lock', [ref]$createdNew); ^
+$lock = New-Object System.Threading.Mutex($true, 'Global\java-cmd-lock', [ref]$createdNew); ^
 if (-not $createdNew) { ^
-    Write-Host 'Waiting for the other process to finish bootstrap dotnet.cmd'; ^
+    Write-Host 'Waiting for the other process to finish bootstrap java.cmd'; ^
     [void]$lock.WaitOne(); ^
 } ^
  ^

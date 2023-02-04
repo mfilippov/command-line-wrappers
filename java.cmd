@@ -73,7 +73,7 @@ Linux)
       JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-linux-aarch64.tar.gz
     fi
     ;;
-  *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
+  *) echo "Unknown architecture $JVM_ARCH" >&2; exit 1;;
   esac;;
 *) echo "Unknown platform: $(uname)" >&2; exit 1;;
 esac
@@ -100,7 +100,7 @@ while true; do  # Note(k15tfu): for goto
       LOCK_OWNER=$(cat "$LOCK_FILE" 2>/dev/null || true)
 
       # Hurry up, bootstrap is ready..
-      if grep -q -x "$DOTNET_URL" "$JVM_TARGET_DIR/.flag" 2>/dev/null; then
+      if grep -q -x "$JVM_URL" "$JVM_TARGET_DIR/.flag" 2>/dev/null; then
         break 3  # Note(k15tfu): goto out of the outer if-else block.
       fi
     done

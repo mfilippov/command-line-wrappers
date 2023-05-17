@@ -42,44 +42,44 @@ Darwin)
     DOTNET_ARCH=arm64
   fi
   case $DOTNET_ARCH in
-  x86_64)
-    DOTNET_HASH_URL=cf3e1c73-a9a9-4e08-8607-8f9edae5f3f2/40a021a98a6b6e430a1f170037735f6f
-    DOTNET_FILE_NAME=dotnet-sdk-6.0.301-osx-x64
-    ;;
   arm64)
-    DOTNET_HASH_URL=3859fff3-f8a9-4e05-87cd-bd6db75833f5/64ec1099d45f85d14099da3c1f92a5c3
-    DOTNET_FILE_NAME=dotnet-sdk-6.0.301-osx-arm64
+    DOTNET_HASH_URL=fc7ed56d-3afe-4aa6-81bb-b4b0f5df56b5/d199f43f7421c6677ba25544b442b6b7
+    DOTNET_FILE_NAME=dotnet-sdk-7.0.302-osx-arm64
+    ;;
+  x86_64)
+    DOTNET_HASH_URL=34ce4803-1444-48a2-9955-e2a9b9061b03/e18c978b55226240ca037cf8b1770064
+    DOTNET_FILE_NAME=dotnet-sdk-7.0.302-osx-x64
     ;;
   *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
   esac;;
 Linux)
   DOTNET_ARCH=$(linux$(getconf LONG_BIT) uname -m)
   case $DOTNET_ARCH in
-  x86_64)
+  armv7l | armv8l)
     if is_linux_musl; then
-      DOTNET_HASH_URL=206aebda-126f-484f-af02-051a17c1ec54/2ec559cb69cec83ffa64dba5441a1b2d
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-x64
+      DOTNET_HASH_URL=cb66972b-75fe-4e91-8a06-ddaf1d7e882b/fd04b081250aa6b40fad8319c7224390
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-musl-arm
     else
-      DOTNET_HASH_URL=77d472e5-194c-421e-992d-e4ca1d08e6cc/56c61ac303ddf1b12026151f4f000a2b
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-x64
+      DOTNET_HASH_URL=773e201f-00f3-4de2-beb7-698d9c72f4b7/4c1de128cb18198e1b9bf30902c665bc
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-arm
     fi
     ;;
   aarch64)
     if is_linux_musl; then
-      DOTNET_HASH_URL=4bd2399a-e0e9-43a6-9767-ac15dd430b1c/3dd4307a1ce811e31943d80eee638bc1
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-arm64
+      DOTNET_HASH_URL=4e8faf53-6f5e-452a-a993-fbb90ab25ad1/f64b041fd3bf3c0e9b2f3c6b0ed887e5
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-musl-arm64
     else
-      DOTNET_HASH_URL=06c4ee8e-bf2c-4e46-ab1c-e14dd72311c1/f7bc6c9677eaccadd1d0e76c55d361ea
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-arm64
+      DOTNET_HASH_URL=142603ad-0df5-4aef-bdc2-87b6140c90ed/2cce467e6c954d01024942b8370aaf70
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-arm64
     fi
     ;;
-  armv7l | armv8l)
+  x86_64)
     if is_linux_musl; then
-      DOTNET_HASH_URL=952c468c-ac70-46b0-9274-4cb9c270950c/f0cd4c8392158547c2fa38674bfd56fd
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-musl-arm
+      DOTNET_HASH_URL=6b06ee15-ac63-4b8a-9bae-49453e258687/536a27d0c3a990757590dfc9f7e617ba
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-musl-x64
     else
-      DOTNET_HASH_URL=a218e3b9-941b-43be-bfb1-615862777457/80954de34ab68729981ed372a8d25b46
-      DOTNET_FILE_NAME=dotnet-sdk-6.0.301-linux-arm
+      DOTNET_HASH_URL=351400ef-f2e6-4ee7-9d1b-4c246231a065/9f7826270fb36ada1bdb9e14bc8b5123
+      DOTNET_FILE_NAME=dotnet-sdk-7.0.302-linux-x64
     fi
     ;;
   *) echo "Unknown architecture $DOTNET_ARCH" >&2; exit 1;;
@@ -168,18 +168,18 @@ set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
 for /f "tokens=3 delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') do set ARCH=%%a
 
 if "%ARCH%"=="ARM64" (
-    set DOTNET_HASH_URL=656c8345-6661-409e-871d-00ca93cec542/cae3dcdc5c668c0e0abcf12d838348f1
-    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-arm64
+    set DOTNET_HASH_URL=3a8c2602-3e5f-44ff-9a1a-4dcac7718051/4309ff475d8771e740baf514a66c7d38
+    set DOTNET_FILE_NAME=dotnet-sdk-7.0.302-win-arm64
 ) else (
 
 if "%ARCH%"=="AMD64" (
-    set DOTNET_HASH_URL=333eba0c-3242-48f3-a923-fdac5f219f77/342a4595101e3b4616360a7666459236
-    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x64
+    set DOTNET_HASH_URL=c973fb82-ecba-4bcc-b1cc-443d817b9472/f4426b15af724f4baf31a50d204d1ca7
+    set DOTNET_FILE_NAME=dotnet-sdk-7.0.302-win-x64
 ) else (
 
 if "%ARCH%"=="x86" (
-    set DOTNET_HASH_URL=0a9cabcb-cb52-4f5e-bb79-1298f9ff9e22/c306c5cc940a9bb9a39ffe6619a255e6
-    set DOTNET_FILE_NAME=dotnet-sdk-6.0.301-win-x86
+    set DOTNET_HASH_URL=823b3ed8-9078-41f5-8ba9-176aabb67866/6cff5b428cfe5b7535c827ebed8283a1
+    set DOTNET_FILE_NAME=dotnet-sdk-7.0.302-win-x86
 ) else (
 
 echo Unknown Windows architecture

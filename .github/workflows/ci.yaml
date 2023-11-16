@@ -6,7 +6,7 @@ on:
     branches:
       - main
 jobs:
-  job1:
+  linux:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -15,7 +15,7 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
-  job2:
+  macos:
     runs-on: macos-latest
     steps:
       - name: Check out repository
@@ -24,7 +24,7 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name : Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
-  job3:
+  windows:
     runs-on: windows-latest
     steps:
       - name: Check out repository

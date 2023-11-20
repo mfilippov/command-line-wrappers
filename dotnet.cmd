@@ -6,7 +6,7 @@ GOTO :CMDSCRIPT
 set -eu
 
 DOTNET_VERSION=7.0.404
-SCRIPT_VERSION=dotnet-cmd-v2
+SCRIPT_VERSION=v2
 COMPANY_DIR="Mikhail Filippov"
 TARGET_DIR="${TEMPDIR:-$HOME/.local/share}/$COMPANY_DIR/dotnet-cmd"
 KEEP_ROSETTA2=false
@@ -64,10 +64,9 @@ Linux)
 *) echo "Unknown platform: $(uname)" >&2; exit 1;;
 esac
 
-DOTNET_FILE_NAME=dotnet-sdk-$DOTNET_VERSION-$DOTNET_OS-$DOTNET_ARCH
-DOTNET_URL=https://dotnetcli.azureedge.net/dotnet/Sdk/$DOTNET_VERSION/$DOTNET_FILE_NAME.tar.gz
-DOTNET_TARGET_DIR=$TARGET_DIR/$DOTNET_FILE_NAME-$SCRIPT_VERSION
-DOTNET_TEMP_FILE=$TARGET_DIR/dotnet-sdk-temp.tar.gz
+DOTNET_URL=https://dotnetcli.azureedge.net/dotnet/Sdk/$DOTNET_VERSION/dotnet-sdk-$DOTNET_VERSION-$DOTNET_OS-$DOTNET_ARCH.tar.gz
+DOTNET_TARGET_DIR=$TARGET_DIR/sdk-$DOTNET_VERSION-$DOTNET_ARCH-$SCRIPT_VERSION
+DOTNET_TEMP_FILE=$TARGET_DIR/temp-$SCRIPT_VERSION.tar.gz
 
 if grep -q -x "$DOTNET_URL" "$DOTNET_TARGET_DIR/.flag" 2>/dev/null; then
   # Everything is up-to-date in $DOTNET_TARGET_DIR, do nothing
@@ -146,27 +145,19 @@ set TARGET_DIR=%LOCALAPPDATA%\%COMPANY_NAME%\dotnet-cmd\
 
 for /f "tokens=3 delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') do set ARCH=%%a
 
-if "%ARCH%"=="ARM64" (
-    set DOTNET_ARCH=arm64
-) else (
-
-if "%ARCH%"=="AMD64" (
-    set DOTNET_ARCH=x64
-) else (
-
-if "%ARCH%"=="x86" (
-    set DOTNET_ARCH=x86
-) else (
+if "%ARCH%"=="ARM"   (set DOTNET_ARCH=arm)   else (
+if "%ARCH%"=="ARM64" (set DOTNET_ARCH=arm64) else (
+if "%ARCH%"=="AMD64" (set DOTNET_ARCH=x64)   else (
+if "%ARCH%"=="x86"   (set DOTNET_ARCH=x86)   else (
 
 echo Unknown Windows architecture
 goto fail
 
-)))
+))))
 
-set DOTNET_FILE_NAME=dotnet-sdk-%DOTNET_VERSION%-win-%DOTNET_ARCH%
-set DOTNET_URL=https://dotnetcli.azureedge.net/dotnet/Sdk/%DOTNET_VERSION%/%DOTNET_FILE_NAME%.zip
-set DOTNET_TARGET_DIR=%TARGET_DIR%%DOTNET_FILE_NAME%-%SCRIPT_VERSION%\
-set DOTNET_TEMP_FILE=%TARGET_DIR%dotnet-sdk-temp.zip
+set DOTNET_URL=https://dotnetcli.azureedge.net/dotnet/Sdk/%DOTNET_VERSION%/dotnet-sdk-%DOTNET_VERSION%-win-%DOTNET_ARCH%.zip
+set DOTNET_TARGET_DIR=%TARGET_DIR%sdk-%DOTNET_VERSION%-%DOTNET_ARCH%-%SCRIPT_VERSION%\
+set DOTNET_TEMP_FILE=%TARGET_DIR%temp-%SCRIPT_VERSION%.zip
 
 set POWERSHELL=%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe
 

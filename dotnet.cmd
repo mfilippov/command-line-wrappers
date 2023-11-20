@@ -49,16 +49,12 @@ Darwin)
   *) echo "Unknown architecture $UNAME_ARCH" >&2; exit 1;;
   esac;;
 Linux)
-  if is_linux_musl; then
-    DOTNET_OS=linux-musl
-  else
-    DOTNET_OS=linux
-  fi
+  DOTNET_OS=linux
   UNAME_ARCH=$(linux$(getconf LONG_BIT) uname -m)
   case $UNAME_ARCH in
-  armv7l | armv8l) DOTNET_ARCH=arm;;
-  aarch64)         DOTNET_ARCH=arm64;;
-  x86_64)          DOTNET_ARCH=x64;;
+  armv7l | armv8l) is_linux_musl && DOTNET_ARCH=musl-arm   || DOTNET_ARCH=arm;;
+  aarch64)         is_linux_musl && DOTNET_ARCH=musl-arm64 || DOTNET_ARCH=arm64;;
+  x86_64)          is_linux_musl && DOTNET_ARCH=musl-x64   || DOTNET_ARCH=x64;;
   *) echo "Unknown architecture $UNAME_ARCH" >&2; exit 1;;
   esac;;
 *) echo "Unknown platform: $(uname)" >&2; exit 1;;

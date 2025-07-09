@@ -6,6 +6,15 @@ on:
     branches:
       - main
 jobs:
+  linux-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: $GITHUB_WORKSPACE/dotnet.cmd --version
+      - name: Test script java.cmd
+        run: $GITHUB_WORKSPACE/java.cmd --version
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -15,15 +24,35 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
-  macos:
+  macos-arm:
     runs-on: macos-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Test script dotnet.cmd
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
-      - name : Test script java.cmd
+      - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
+  macos:
+    runs-on: macos-13
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: $GITHUB_WORKSPACE/dotnet.cmd --version
+      - name: Test script java.cmd
+        run: $GITHUB_WORKSPACE/java.cmd --version
+  windows-arm:
+    runs-on: windows-11-arm
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Test script dotnet.cmd
+        run: "%GITHUB_WORKSPACE%\\dotnet.cmd --version"
+        shell: cmd
+      - name: Test script java.cmd
+        run: "%GITHUB_WORKSPACE%\\java.cmd --version"
+        shell: cmd
   windows:
     runs-on: windows-latest
     steps:

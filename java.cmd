@@ -34,7 +34,7 @@ retry_on_error () {
 is_linux_musl () {
   (ldd --version 2>&1 || true) | grep -q musl
 }
-# Links from here: https://github.com/corretto/corretto-17/releases
+# Links from here: https://github.com/corretto/corretto-25/releases
 case $(uname) in
 Darwin)
   JVM_ARCH=$(uname -m)
@@ -43,12 +43,12 @@ Darwin)
   fi
   case $JVM_ARCH in
   x86_64)
-    JVM_FILE_NAME=amazon-corretto-17-x64-macos-jdk
-    JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-macosx-x64.tar.gz
+    JVM_FILE_NAME=amazon-corretto-25-x64-macos-jdk
+    JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-macosx-x64.tar.gz
     ;;
   arm64)
-    JVM_FILE_NAME=amazon-corretto-17-aarch64-macos-jdk
-    JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-macosx-aarch64.tar.gz
+    JVM_FILE_NAME=amazon-corretto-25-aarch64-macos-jdk
+    JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-macosx-aarch64.tar.gz
     ;;
   *) echo "Unknown architecture $JVM_ARCH" >&2; exit 1;;
   esac;;
@@ -57,20 +57,20 @@ Linux)
   case $JVM_ARCH in
   x86_64)
     if is_linux_musl; then
-      JVM_FILE_NAME=amazon-corretto-17-x64-alpine-jdk
-      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-alpine-linux-x64.tar.gz
+      JVM_FILE_NAME=amazon-corretto-25-x64-alpine-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-alpine-linux-x64.tar.gz
     else
-      JVM_FILE_NAME=amazon-corretto-17-x64-linux-jdk
-      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-linux-x64.tar.gz
+      JVM_FILE_NAME=amazon-corretto-25-x64-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-linux-x64.tar.gz
     fi
     ;;
   aarch64)
     if is_linux_musl; then
-      JVM_FILE_NAME=amazon-corretto-17-alpine-linux-jdk
-      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-alpine-linux-aarch64.tar.gz
+      JVM_FILE_NAME=amazon-corretto-25-alpine-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-alpine-linux-aarch64.tar.gz
     else
-      JVM_FILE_NAME=amazon-corretto-17-aarch64-linux-jdk
-      JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-linux-aarch64.tar.gz
+      JVM_FILE_NAME=amazon-corretto-25-aarch64-linux-jdk
+      JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-linux-aarch64.tar.gz
     fi
     ;;
   *) echo "Unknown architecture $JVM_ARCH" >&2; exit 1;;
@@ -168,13 +168,13 @@ set TARGET_DIR=%LOCALAPPDATA%\Temp\%COMPANY_NAME%\
 for /f "tokens=3 delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') do set ARCH=%%a
 
 if "%ARCH%"=="ARM64" (
-    set JVM_URL=https://aka.ms/download-jdk/microsoft-jdk-17.0.6-windows-aarch64.zip
-    set JVM_FILE_NAME=microsoft-jdk-17.0.6-windows-aarch64
+    set JVM_URL=https://aka.ms/download-jdk/microsoft-jdk-25.0.4.1-windows-aarch64.zip
+    set JVM_FILE_NAME=microsoft-jdk-25.0.4.1-windows-aarch64
 ) else (
 
 if "%ARCH%"=="AMD64" (
-    set JVM_URL=https://corretto.aws/downloads/resources/17.0.6.10.1/amazon-corretto-17.0.6.10.1-windows-x64-jdk.zip
-    set JVM_FILE_NAME=microsoft-jdk-17.0.6-windows-x64
+    set JVM_URL=https://corretto.aws/downloads/resources/25.0.4.10.1/amazon-corretto-25.0.4.10.1-windows-x64-jdk.zip
+    set JVM_FILE_NAME=amazon-corretto-25-windows-x64-jdk
 ) else (
 
 if "%ARCH%"=="x86" (

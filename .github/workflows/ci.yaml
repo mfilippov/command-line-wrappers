@@ -15,6 +15,15 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
+      - name: Test parallel start of uv.cmd and uvx.cmd
+        run: |
+          $GITHUB_WORKSPACE/uv.cmd --version & UV_PID=$!
+          $GITHUB_WORKSPACE/uvx.cmd --version & UVX_PID=$!
+          wait $UV_PID && wait $UVX_PID
+      - name: Test script uv.cmd
+        run: $GITHUB_WORKSPACE/uv.cmd --version
+      - name: Test script uvx.cmd
+        run: $GITHUB_WORKSPACE/uvx.cmd --version
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +33,15 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
+      - name: Test parallel start of uv.cmd and uvx.cmd
+        run: |
+          $GITHUB_WORKSPACE/uv.cmd --version & UV_PID=$!
+          $GITHUB_WORKSPACE/uvx.cmd --version & UVX_PID=$!
+          wait $UV_PID && wait $UVX_PID
+      - name: Test script uv.cmd
+        run: $GITHUB_WORKSPACE/uv.cmd --version
+      - name: Test script uvx.cmd
+        run: $GITHUB_WORKSPACE/uvx.cmd --version
   macos-arm:
     runs-on: macos-latest
     steps:
@@ -33,8 +51,17 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
+      - name: Test parallel start of uv.cmd and uvx.cmd
+        run: |
+          $GITHUB_WORKSPACE/uv.cmd --version & UV_PID=$!
+          $GITHUB_WORKSPACE/uvx.cmd --version & UVX_PID=$!
+          wait $UV_PID && wait $UVX_PID
+      - name: Test script uv.cmd
+        run: $GITHUB_WORKSPACE/uv.cmd --version
+      - name: Test script uvx.cmd
+        run: $GITHUB_WORKSPACE/uvx.cmd --version
   macos:
-    runs-on: macos-13
+    runs-on: macos-15-intel
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -42,6 +69,15 @@ jobs:
         run: $GITHUB_WORKSPACE/dotnet.cmd --version
       - name: Test script java.cmd
         run: $GITHUB_WORKSPACE/java.cmd --version
+      - name: Test parallel start of uv.cmd and uvx.cmd
+        run: |
+          $GITHUB_WORKSPACE/uv.cmd --version & UV_PID=$!
+          $GITHUB_WORKSPACE/uvx.cmd --version & UVX_PID=$!
+          wait $UV_PID && wait $UVX_PID
+      - name: Test script uv.cmd
+        run: $GITHUB_WORKSPACE/uv.cmd --version
+      - name: Test script uvx.cmd
+        run: $GITHUB_WORKSPACE/uvx.cmd --version
   windows-arm:
     runs-on: windows-11-arm
     steps:
@@ -53,6 +89,12 @@ jobs:
       - name: Test script java.cmd
         run: "%GITHUB_WORKSPACE%\\java.cmd --version"
         shell: cmd
+      - name: Test script uv.cmd
+        run: "%GITHUB_WORKSPACE%\\uv.cmd --version"
+        shell: cmd
+      - name: Test script uvx.cmd
+        run: "%GITHUB_WORKSPACE%\\uvx.cmd --version"
+        shell: cmd
   windows:
     runs-on: windows-latest
     steps:
@@ -63,4 +105,10 @@ jobs:
         shell: cmd
       - name: Test script java.cmd
         run: "%GITHUB_WORKSPACE%\\java.cmd --version"
+        shell: cmd
+      - name: Test script uv.cmd
+        run: "%GITHUB_WORKSPACE%\\uv.cmd --version"
+        shell: cmd
+      - name: Test script uvx.cmd
+        run: "%GITHUB_WORKSPACE%\\uvx.cmd --version"
         shell: cmd
